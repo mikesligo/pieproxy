@@ -29,8 +29,11 @@ class Packet:
     '''
 
     def __init__(self, packet):
-
         packet = packet[0]
+        self.full = packet
+        if "GET" not in packet[0:3]:
+            print "EXPECTING GET REQUEST"
+            print packet
 
         #parse ethernet header
         eth_length = 14
@@ -66,35 +69,49 @@ class Packet:
         doff_reserved = tcph[4]
         self.tcph_length = doff_reserved >> 4
         
-        h_size = iph_length + self.tcph_length * 4
-        
-        self.data = packet[h_size:]
+        h_size = (eth_length + iph_length + self.tcph_length) * 4
+        print "H_SIZE " + str(h_size/4)
+        self.data = packet[0:]
 
     def printpacket(self):
-        print 'Destination MAC : ' + self.dest_mac + ' Source MAC : ' + self.src_mac + ' Protocol : ' + str(self.eth_protocol)
         print 'Version : ' + str(self.version) + ' IP Header Length : ' + str(self.ihl) + ' TTL : ' + str(self.ttl) + ' Protocol : ' + str(self.protocol) + ' Source Address : ' + str(self.s_addr) + ' Destination Address : ' + str(self.d_addr)
         print 'Source Port : ' + str(self.source_port) + ' Dest Port : ' + str(self.dest_port) + ' Sequence Number : ' + str(self.sequence) + ' Acknowledgement : ' + str(self.acknowledgement) + ' TCP header length : ' + str(self.tcph_length) 
-        print 'Data:\n' + self.data
+        print 'Data: ' + self.data
 
 class Server:
     def __init__(self, host, port):
         self.port = port;
         self.host = host;
-        self.socket = socket.socket()
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # don't bind address
-        self.socket.bind((host,port))
-        self.socket.listen(5)
+        self.s = socket.socket()
+        self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # don't bind address
+        self.s.bind((host,port))
+        self.s.listen(5)
 
     def receive(self):
-        clientsocket, addr = self.socket.accept()     # Establish connection with client.
-        packet = clientsocket.recvfrom(4096)
+        conn, addr = self.s.accept()     # Establish connection with client.
+        packet = conn.recvfrom(8192)
+        print packet[0]
         packet = Packet(packet)
         packet.printpacket()
-        clientsocket.send('Thank you for connecting')
+        conn.close()
+        self.forward_packet(packet)
+
+    def forward_packet(self, packet):
+        s = socket.socket()
+        s.connect((packet.d_addr,80))
+        s.sendall(packet.data)
+        print s.recvfrom(8192)
+
+    def send_socket(self,socket):
+        socket.send('Thank you for connecting')
+
+    def close(self):
+        self.s.close()
 
 if __name__ == '__main__':
+    print "Pie Proxy\n=============================\n"
     host = socket.gethostname() # Get local machine name
-    port = 8000                # Reserve a port for your service.
+    port = 8000                # Reserve port
     server = Server(host,port)
-    while True:
-        server.receive()
+    server.receive()
+    server.receive()
