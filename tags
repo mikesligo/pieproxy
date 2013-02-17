@@ -1,0 +1,75 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+DEFAULT_LOG_FILENAME	working.py	/^DEFAULT_LOG_FILENAME = "proxy.log"$/;"	v
+DevNull	working.py	/^    class DevNull (object):$/;"	c	function:daemonize
+ErrorLog	working.py	/^    class ErrorLog:$/;"	c	function:daemonize
+Forward	100.py	/^class Forward:$/;"	c
+ProxyHandler	working.py	/^class ProxyHandler (BaseHTTPServer.BaseHTTPRequestHandler):$/;"	c
+TheServer	100.py	/^class TheServer:$/;"	c
+ThreadingHTTPServer	working.py	/^                           BaseHTTPServer.HTTPServer):$/;"	c
+__base	working.py	/^    __base = BaseHTTPServer.BaseHTTPRequestHandler$/;"	v	class:ProxyHandler
+__base_handle	working.py	/^    __base_handle = __base.handle$/;"	v	class:ProxyHandler
+__init__	100.py	/^    def __init__(self):$/;"	m	class:Forward
+__init__	100.py	/^    def __init__(self, host, port):$/;"	m	class:TheServer
+__init__	ref.py	/^    def __init__ (self, host, port):$/;"	m	class:proxy_server
+__init__	ref.py	/^    def __init__ (self, receiver, address):$/;"	m	class:proxy_sender
+__init__	ref.py	/^    def __init__ (self, server, (conn, addr)):$/;"	m	class:proxy_receiver
+__init__	working.py	/^        def __init__ (self): self.fd = os.open ("\/dev\/null", os.O_WRONLY)$/;"	m	class:daemonize.DevNull
+__init__	working.py	/^        def __init__ (self, obj): self.obj = obj$/;"	m	class:daemonize.ErrorLog
+__init__	working.py	/^    def __init__ (self, server_address, RequestHandlerClass, logger=None):$/;"	m	class:ThreadingHTTPServer
+__version__	working.py	/^__version__ = "0.3.1"$/;"	v
+_connect_to	working.py	/^    def _connect_to(self, netloc, soc):$/;"	m	class:ProxyHandler
+_read_write	working.py	/^    def _read_write(self, soc, max_idling=20, local=False):$/;"	m	class:ProxyHandler
+buffer_size	100.py	/^buffer_size = 4096$/;"	v
+channel	100.py	/^    channel = {}$/;"	v	class:TheServer
+channel_counter	ref.py	/^    channel_counter = 0$/;"	v	class:proxy_receiver
+close	working.py	/^        def close (self): os.close (self.fd)$/;"	m	class:daemonize.DevNull
+close	working.py	/^        def close (self): pass$/;"	m	class:daemonize.ErrorLog
+collect_incoming_data	ref.py	/^    def collect_incoming_data (self, data):$/;"	m	class:proxy_receiver
+collect_incoming_data	ref.py	/^    def collect_incoming_data (self, data):$/;"	m	class:proxy_sender
+daemonize	working.py	/^def daemonize (logger):$/;"	f
+delay	100.py	/^delay = 0.0001$/;"	v
+do_CONNECT	working.py	/^    def do_CONNECT(self):$/;"	m	class:ProxyHandler
+do_DELETE	working.py	/^    do_DELETE=do_GET$/;"	v	class:ProxyHandler
+do_GET	working.py	/^    def do_GET(self):$/;"	m	class:ProxyHandler
+do_HEAD	working.py	/^    do_HEAD = do_GET$/;"	v	class:ProxyHandler
+do_POST	working.py	/^    do_POST = do_GET$/;"	v	class:ProxyHandler
+do_PUT	working.py	/^    do_PUT  = do_GET$/;"	v	class:ProxyHandler
+fileno	working.py	/^        def fileno (self): return self.fd$/;"	m	class:daemonize.DevNull
+forward_to	100.py	/^forward_to = ('smtp.zaz.ufsk.br', 25)$/;"	v
+found_terminator	ref.py	/^    def found_terminator (self):$/;"	m	class:proxy_receiver
+found_terminator	ref.py	/^    def found_terminator (self):$/;"	m	class:proxy_sender
+handle	working.py	/^    def handle(self):$/;"	m	class:ProxyHandler
+handle_accept	ref.py	/^    def handle_accept (self):$/;"	m	class:proxy_server
+handle_close	ref.py	/^    def handle_close (self):$/;"	m	class:proxy_receiver
+handle_close	ref.py	/^    def handle_close (self):$/;"	m	class:proxy_sender
+handle_connect	ref.py	/^    def handle_connect (self):$/;"	m	class:proxy_sender
+handler	working.py	/^def handler (signo, frame):$/;"	f
+host	pie.py	/^host = socket.gethostname() # Get local machine name$/;"	v
+input_list	100.py	/^    input_list = []$/;"	v	class:TheServer
+logSetup	working.py	/^def logSetup (filename, log_size, daemon):$/;"	f
+log_error	working.py	/^    def log_error (self, format, *args):$/;"	m	class:ProxyHandler
+log_message	working.py	/^    def log_message (self, format, *args):$/;"	m	class:ProxyHandler
+main	working.py	/^def main ():$/;"	f
+main_loop	100.py	/^    def main_loop(self):$/;"	m	class:TheServer
+on_accept	100.py	/^    def on_accept(self):$/;"	m	class:TheServer
+on_close	100.py	/^    def on_close(self):$/;"	m	class:TheServer
+on_recv	100.py	/^    def on_recv(self):$/;"	m	class:TheServer
+port	pie.py	/^port = 8000                # Reserve a port for your service.$/;"	v
+proxy_receiver	ref.py	/^class proxy_receiver (asynchat.async_chat):$/;"	c
+proxy_sender	ref.py	/^class proxy_sender (asynchat.async_chat):$/;"	c
+proxy_server	ref.py	/^class proxy_server (asyncore.dispatcher):$/;"	c
+rbufsize	working.py	/^    rbufsize = 0                        # self.rfile Be unbuffered$/;"	v	class:ProxyHandler
+read	working.py	/^        def read (self, *args, **kwargs): return 0$/;"	m	class:daemonize.DevNull
+read	working.py	/^        def read (self, *args, **kwargs): return 0$/;"	m	class:daemonize.ErrorLog
+s	tmp.py	/^s = socket.socket()$/;"	v
+server_version	working.py	/^    server_version = "TinyHTTPProxy\/" + __version__$/;"	v	class:ProxyHandler
+serversocket	pie.py	/^serversocket = socket.socket()         # Create a socket object$/;"	v
+start	100.py	/^    def start(self, host, port):$/;"	m	class:Forward
+usage	working.py	/^def usage (msg=None):$/;"	f
+write	working.py	/^        def write (self, *args, **kwargs): return 0$/;"	m	class:daemonize.DevNull
+write	working.py	/^        def write (self, string): self.obj.log (logging.ERROR, string)$/;"	m	class:daemonize.ErrorLog
