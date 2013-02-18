@@ -1,3 +1,20 @@
+''' Copyright 2013 Michael Gallagher
+
+    Email: mikesligo at gmail dot com
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. '''
+
 #!/usr/bin/python
 
 import re
@@ -21,7 +38,7 @@ class Server:
     def __init__(self, host, port):
         self.port = port;
         self.host = host;
-        self.mainsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.mainsocket = socket.socket()
         self.mainsocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # don't bind address
         self.mainsocket.bind((host,port))
         self.mainsocket.listen(5)
@@ -42,7 +59,7 @@ class Server:
 
     def forward_packet_to_server(self, packet):
         print "Forwarding packet to server..."
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s = socket.socket()
         try:
             print 'Connecting to '+packet.host
             s.connect((packet.host,80))
