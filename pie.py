@@ -27,8 +27,8 @@ class Packet:
         packet = packet[0]
         print packet
         self.full = packet + "\r\n"
-        if "GET" in packet[0:3]:
-            host = re.search('Host: (\S+)',packet)
+        if "GET" in packet[0:3] or "POST" in packet[0:4]:
+            host = re.search('\nHost: (\S+)',packet)
             self.host = host.group(1)
 
     def printpacket(self):
@@ -38,24 +38,26 @@ class Server:
     def __init__(self, host, port):
         self.port = port;
         self.host = host;
+
+    def start(self):
+        print "Starting PieProxy..."
         self.mainsocket = socket.socket()
         self.mainsocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # don't bind address
         self.mainsocket.bind((host,port))
         self.mainsocket.listen(5)
-
-    def start(self):
-        print "Starting PieProxy..."
-        self.conn, addr = self.mainsocket.accept()     # Establish connection with client.
-        listen = Thread(target=self.listen_for_incoming_client,args=())
-        listen.start()
+        print "Starting listen thread..."
+        #listen = Thread(target=self.listen_for_incoming_client,args=())
+        #listen.start()
+        self.listen_for_incoming_client()
 
     def listen_for_incoming_client(self): # To be run in a thread
         while True:
             print "Listening for incoming client..."
+            self.conn, addr = self.mainsocket.accept()     # Establish connection with client.
             packet = self.conn.recvfrom(8192)
             packet = Packet(packet)
             self.forward_packet_to_server(packet)
-            raw_input("\nHit enter to continue")
+#            raw_input("\nHit enter to continue")
 
     def forward_packet_to_server(self, packet):
         print "Forwarding packet to server..."
@@ -64,10 +66,11 @@ class Server:
             print 'Connecting to '+packet.host
             s.connect((packet.host,80))
             s.sendall(packet.full)
+            self.listen_for_incoming_server(s)
         except:
-            print "ERROR ATTEMPTING TO CONNET OR SEND PACKETS\n============================\n"
+            print "ERROR ATTEMPTING TO CONNECT OR SEND PACKETS"
+            print "==========================================="
             print packet.full
-        self.listen_for_incoming_server(s)
 
     def listen_for_incoming_server(self,socket):
         print "Listening for incoming packets from the server"
