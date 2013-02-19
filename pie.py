@@ -24,8 +24,7 @@ from struct import *
 
 class Packet:
     def __init__(self, packet):
-        packet = packet[0]
-        print packet
+        #print packet
         self.full = packet + "\r\n"
         if "GET" in packet[0:3] or "POST" in packet[0:4]:
             host = re.search('\nHost: (\S+)',packet)
@@ -54,7 +53,7 @@ class Server:
         while True:
             print "Listening for incoming client..."
             self.conn, addr = self.mainsocket.accept()     # Establish connection with client.
-            packet = self.conn.recvfrom(8192)
+            packet = self.conn.recv(8192)
             packet = Packet(packet)
             self.forward_packet_to_server(packet)
 #            raw_input("\nHit enter to continue")
@@ -66,18 +65,31 @@ class Server:
             print 'Connecting to '+packet.host
             s.connect((packet.host,80))
             s.sendall(packet.full)
+            #receive = Thread(target=self.listen_for_incoming_server,args=(s,))
+            #receive.start()
             self.listen_for_incoming_server(s)
         except:
-            print "ERROR ATTEMPTING TO CONNECT OR SEND PACKETS"
+            print "\nERROR ATTEMPTING TO CONNECT OR SEND PACKETS"
             print "==========================================="
             print packet.full
+            raise
 
     def listen_for_incoming_server(self,socket):
         print "Listening for incoming packets from the server"
-        response = socket.recvfrom(8192)
-        response = Packet(response)
-        self.return_response_to_client(response)
-        socket.close()
+        print "Receiving data..."
+        socket.setblocking(0)
+        socket.settimeout(60.0)
+        response = socket.recv(8192)
+        print "Length: "+str(len(response))
+        try:
+            while 1:
+                data = socket.recv(8192)
+                response = response + data
+        finally:
+            response = Packet(response)
+            self.return_response_to_client(response)
+            socket.close()
+            return
 
     def return_response_to_client(self, response):
         print "Returning response to client..."
