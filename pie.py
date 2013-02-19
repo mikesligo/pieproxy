@@ -22,6 +22,8 @@ import socket               # Import socket module
 from threading import Thread
 from struct import *
 
+blacklist = ['tfa.ie']
+
 class Packet:
     def __init__(self, packet):
         packet = str(packet)
@@ -61,15 +63,19 @@ class Server:
                 print "\nListening for incoming client..."
                 packet = Packet(packet)
                 self.forward_packet_to_server(packet)
-#           raw_input("\nHit enter to continue")
 
     def forward_packet_to_server(self, packet):
         print "Forwarding packet to server..."
         s = socket.socket()
-        s.settimeout(0.5)
+        s.settimeout(1)
         try:
             if packet is not None: 
                 print 'Connecting to '+packet.host
+                for i in blacklist:
+                    if packet.host in i:
+                        self.reject_address()
+                        s.close()
+                        return
             else: 
                 print "Host is none"
                 print packet.full
@@ -109,8 +115,13 @@ class Server:
         print "Returning response to client..."
         self.conn.sendall(response)
 
+    def reject_address(self):
+        print "Rejecting..."
+        self.conn.close()
+
     def close(self):
-        self.mainsocket.close()
+        self.conn.close()
+        listen_for_incoming_client()
 
 if __name__ == '__main__':
     print
