@@ -24,7 +24,7 @@ from struct import *
 
 class Packet:
     def __init__(self, packet):
-        #print packet
+        print packet
         self.full = packet + "\r\n"
         if "GET" in packet[0:3] or "POST" in packet[0:4]:
             host = re.search('\nHost: (\S+)',packet)
@@ -51,7 +51,7 @@ class Server:
 
     def listen_for_incoming_client(self): # To be run in a thread
         while True:
-            print "Listening for incoming client..."
+            print "\nListening for incoming client..."
             self.conn, addr = self.mainsocket.accept()     # Establish connection with client.
             packet = self.conn.recv(8192)
             packet = Packet(packet)
@@ -61,6 +61,7 @@ class Server:
     def forward_packet_to_server(self, packet):
         print "Forwarding packet to server..."
         s = socket.socket()
+        s.settimeout(1.0)
         try:
             print 'Connecting to '+packet.host
             s.connect((packet.host,80))
@@ -77,23 +78,24 @@ class Server:
     def listen_for_incoming_server(self,socket):
         print "Listening for incoming packets from the server"
         print "Receiving data..."
-        socket.setblocking(0)
-        socket.settimeout(60.0)
         response = socket.recv(8192)
-        print "Length: "+str(len(response))
+        data = response
         try:
-            while 1:
+            while len(data) > 0:
                 data = socket.recv(8192)
                 response = response + data
+                print "Receiving more data..."
+                print "Length: " + str(len(data))
         finally:
-            response = Packet(response)
+            print "Response Length: " + str(len(response))
             self.return_response_to_client(response)
             socket.close()
+            print "Killing thread..."
             return
 
     def return_response_to_client(self, response):
         print "Returning response to client..."
-        self.conn.sendall(response.full)
+        self.conn.sendall(response)
 
     def close(self):
         self.mainsocket.close()
