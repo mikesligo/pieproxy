@@ -24,11 +24,17 @@ from struct import *
 
 class Packet:
     def __init__(self, packet):
+        packet = str(packet)
         print packet
+        print "length: "+str(len(packet))
         self.full = packet + "\r\n"
-        if "GET" in packet[0:3] or "POST" in packet[0:4]:
+        try:
             host = re.search('\nHost: (\S+)',packet)
             self.host = host.group(1)
+        except:
+            print "Error finding host"
+            print packet
+            raise
 
     def printpacket(self):
         print 'All: \n' + self.full
@@ -45,25 +51,31 @@ class Server:
         self.mainsocket.bind((host,port))
         self.mainsocket.listen(5)
         print "Starting listen thread..."
-        #listen = Thread(target=self.listen_for_incoming_client,args=())
-        #listen.start()
-        self.listen_for_incoming_client()
+        listen = Thread(target=self.listen_for_incoming_client,args=())
+        listen.start()
+        #self.listen_for_incoming_client()
 
     def listen_for_incoming_client(self): # To be run in a thread
         while True:
-            print "\nListening for incoming client..."
             self.conn, addr = self.mainsocket.accept()     # Establish connection with client.
             packet = self.conn.recv(8192)
-            packet = Packet(packet)
-            self.forward_packet_to_server(packet)
-#            raw_input("\nHit enter to continue")
+            if len(packet) != 0:
+                print "\nListening for incoming client..."
+                packet = Packet(packet)
+                self.forward_packet_to_server(packet)
+#               raw_input("\nHit enter to continue")
 
     def forward_packet_to_server(self, packet):
         print "Forwarding packet to server..."
         s = socket.socket()
         s.settimeout(1.0)
         try:
-            print 'Connecting to '+packet.host
+            if packet is not None: 
+                print "Type: "+str(type(packet))
+                #print 'Connecting to '+packet.host
+            else: 
+                print "Host is none"
+                print packet.full
             s.connect((packet.host,80))
             s.sendall(packet.full)
             #receive = Thread(target=self.listen_for_incoming_server,args=(s,))
