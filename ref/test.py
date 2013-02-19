@@ -21,6 +21,7 @@ import re
 import socket               # Import socket module
 from threading import Thread
 from struct import *
+import time
 
 class Packet:
     def __init__(self, packet):
@@ -66,7 +67,7 @@ class Server:
     def forward_packet_to_server(self, packet):
         print "Forwarding packet to server..."
         s = socket.socket()
-        s.settimeout(0.5)
+        s.settimeout(1)
         try:
             if packet is not None: 
                 print 'Connecting to '+packet.host
@@ -79,8 +80,8 @@ class Server:
             #receive.start()
             self.listen_for_incoming_server(s)
         except:
-            print "\nERROR"
-            print "====="
+            print "\nERROR ATTEMPTING TO CONNECT OR SEND PACKETS"
+            print "==========================================="
             print packet.full
             raise
 
@@ -88,12 +89,10 @@ class Server:
         print "Listening for incoming packets from the server"
         print "Receiving data..."
         response = socket.recv(8192)
-        print "Timeout: " + str(socket.gettimeout())
         data = response
         try:
             while len(data) > 0:
-                socket.settimeout(socket.gettimeout() + 0.01)
-                print "Timeout: " + str(socket.gettimeout())
+                s.settimeout(s.gettimeout()+0.1)
                 data = socket.recv(8192)
                 response = response + data
                 print "Receiving more data..."
