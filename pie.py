@@ -94,6 +94,7 @@ class Server:
         print "Listening for incoming packets from the server"
         print "Receiving data..."
         response = socket.recv(8192)
+        self.return_response_to_client(response)
         print "Timeout: " + str(socket.gettimeout())
         data = response
         try:
@@ -101,12 +102,11 @@ class Server:
                 socket.settimeout(socket.gettimeout() + 0.01)
                 print "Timeout: " + str(socket.gettimeout())
                 data = socket.recv(8192)
-                response = response + data
+                self.return_response_to_client(data)
                 print "Receiving more data..."
                 print "Length: " + str(len(data))
         finally:
             print "Response Length: " + str(len(response))
-            self.return_response_to_client(response)
             socket.close()
             print "Killing thread..."
             return
